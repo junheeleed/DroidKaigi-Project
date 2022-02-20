@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="appCompatActivity"
+            type="androidx.appcompat.app.AppCompatActivity" />
+
+        <variable
+            name="vm"
+            type="com.info.droidkaigiapplication.presentation.session.detail.SessionDetailsViewModel" />
+
+        <variable
+            name="sessionId"
+            type="Integer" />
+
+        <variable
+            name="roomId"
+            type="Integer" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{vm.errorMessage.empty ? View.VISIBLE : View.GONE}">
+
+            <com.info.droidkaigiapplication.presentation.session.detail.NestedScrollableHost
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:appCompatActivity="@{appCompatActivity}"
+                    app:sessionDetails="@{vm.sessionDetails}"
+                    app:sessionId="@{sessionId}"
+                    app:roomId="@{roomId}"/>
+
+            </com.info.droidkaigiapplication.presentation.session.detail.NestedScrollableHost>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="85dp"
+            layout="@layout/layout_failure_info"
+            bind:message="@{vm.errorMessage}"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

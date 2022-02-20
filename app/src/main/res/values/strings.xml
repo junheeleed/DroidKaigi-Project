@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">DroidKaigi Application</string>
+    <string name="session">session</string>
+    <string name="search">search</string>
+    <string name="more">more</string>
+    <string name="all">all</string>
+    <string name="day">Day%d</string>
+    <string name="reference">Reference</string>
+    <string name="droidkaigi_conference">DroidKaigi/conference-app-2018</string>
+    <string name="reference_drokaigi_url">https://github.com/DroidKaigi/conference-app-2018</string>
+    <string name="function">Function</string>
+    <string name="more_function_first">- show sessions depends on room.</string>
+    <string name="more_function_second">- show session detail that is clicked in session list.</string>
+    <string name="more_function_third">- show sessions by searched keyword.</string>
+    <string name="more_by_writer">by Junhee Lee 2021</string>
+    <string name="title">title</string>
+    <string name="speakers">speakers</string>
+    <string name="start_at">startAt</string>
+    <string name="end_at">endAt</string>
+    <string name="period_char">~</string>
+    <string name="description">description</string>
+    <string name="next_session_title">next session title</string>
+    <string name="previous_session_detail">previous session detail</string>
+    <string name="next_session_detail">next session detail</string>
+
+    <string name="network_not_connected">Cellular or Wifi is not turn on.</string>
+    <string name="data_load_failed">Failed to load data.</string>
+
+    <!-- Preference Keys -->
+    <string name="pref_key_enable_local_time" translatable="false">pref_key_enable_local_time</string>
+    <string name="pref_key_enable_notification" translatable="false">pref_key_enable_notification</string>
+    <string name="pref_key_enable_hide_bottom_navigation" translatable="false">pref_key_enable_hide_bottom_navigation</string>
+    <string name="pref_key_enable_reopen_previous_room_sessions" translatable="false">pref_key_enable_reopen_previous_room_sessions</string>
+</resources>
