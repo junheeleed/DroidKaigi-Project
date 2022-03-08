@@ -5,23 +5,99 @@
 
     <data>
         <variable
-            name="session"
-            type="com.info.droidkaigiapplication.presentation.session.model.Session" />
+            name="context"
+            type="android.content.Context" />
+        <variable
+            name="sessionSummary"
+            type="com.info.droidkaigiapplication.presentation.session.list.model.SessionSummary" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="20dp"
-        tools:context=".presentation.MainActivity">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{session.title}"
-            tools:text="@string/title"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"/>
+            android:padding="20dp"
+            tools:context=".presentation.MainActivity">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/session_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="00:00"
+                app:startDate="@{sessionSummary.startsAt}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/slush"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="@string/slush"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/session_time"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="@{sessionSummary.room.name}"
+                tools:text="@string/room"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/slush"/>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@{sessionSummary.title}"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                tools:text="@string/title"
+                app:layout_constraintTop_toBottomOf="@id/session_time"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@{sessionSummary.description}"
+                android:maxLines="3"
+                android:ellipsize="end"
+                tools:text="description"
+                app:layout_constraintTop_toBottomOf="@id/title"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <ImageView
+                android:id="@+id/speaker_profile"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="15dp"
+                android:contentDescription="@string/session_profile"
+                android:src="@drawable/profile_default"
+                app:context="@{context}"
+                app:profilePictureUrl="@{sessionSummary.speakerSummary.profilePicture}"
+                app:layout_constraintTop_toBottomOf="@id/description"
+                app:layout_constraintLeft_toLeftOf="parent"/>
+
+            <TextView
+                android:id="@+id/speaker_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{sessionSummary.speakerSummary.fullName}"
+                android:textColor="@android:color/black"
+                android:layout_marginStart="10dp"
+                tools:text="@string/speaker_full_name"
+                app:layout_constraintTop_toTopOf="@id/speaker_profile"
+                app:layout_constraintStart_toEndOf="@id/speaker_profile"
+                app:layout_constraintBottom_toBottomOf="@id/speaker_profile"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 </layout>

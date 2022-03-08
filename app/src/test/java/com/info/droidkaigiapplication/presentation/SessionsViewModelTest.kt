@@ -9,7 +9,7 @@ import com.info.droidkaigiapplication.data.repository.RoomRepository
 import com.info.droidkaigiapplication.data.source.room.RoomData
 import com.info.droidkaigiapplication.mock
 import com.info.droidkaigiapplication.presentation.session.SessionsViewModel
-import com.info.droidkaigiapplication.presentation.session.model.Room
+import com.info.droidkaigiapplication.presentation.session.list.model.Room
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert

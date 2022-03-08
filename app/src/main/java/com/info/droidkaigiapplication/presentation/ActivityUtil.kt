@@ -61,3 +61,7 @@ fun <T : Any> Result<T>.isFailed(): Boolean {
 fun <T : Any> Result<T>.getFailureMessage(context: Context): String {
     return NetworkRequestFailureMessage(context, this).getMessage()
 }
+
+fun <T : Any> Result<T>.getData(): T {
+    return (this as Result.Succeed<T>).data
+}

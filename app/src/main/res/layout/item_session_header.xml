@@ -5,14 +5,14 @@
 
     <data>
         <variable
-            name="session"
-            type="com.info.droidkaigiapplication.presentation.session.model.Session" />
+            name="sessionSummary"
+            type="com.info.droidkaigiapplication.presentation.session.list.model.SessionSummary" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/gray"
+        android:background="@color/session_header_background"
         android:padding="20dp"
         tools:context=".presentation.MainActivity">
 
@@ -21,8 +21,9 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
             android:textStyle="bold"
-            android:textSize="15sp"
-            app:dateStringWithDayOfWeek="@{session.startsAt}"
+            android:textSize="16sp"
+            app:startDate="@{sessionSummary.startsAt}"
+            app:endDate="@{sessionSummary.endsAt}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"/>
 

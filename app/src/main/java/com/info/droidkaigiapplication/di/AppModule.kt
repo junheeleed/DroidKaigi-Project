@@ -23,8 +23,8 @@ val sessionRecyclerViewPool = module {
 
 val viewModelModule = module {
     viewModel { SessionsViewModel(get(), get()) }
-    viewModel { AllSessionListViewModel(get(), get()) }
-    viewModel { SessionListViewModel(get(), get()) }
+    viewModel { AllSessionListViewModel(get(), get(), get(), get()) }
+    viewModel { SessionListViewModel(get(), get(), get(), get()) }
     viewModel { SessionDetailsViewModel(get(), get()) }
     viewModel { SessionDetailViewModel(get(), get(), get()) }
     viewModel { SearchViewModel(get(), get(), get()) }

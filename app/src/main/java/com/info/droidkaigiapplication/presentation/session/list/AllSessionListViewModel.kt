@@ -5,21 +5,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.info.droidkaigiapplication.data.Result
+import com.info.droidkaigiapplication.data.repository.RoomRepository
 import com.info.droidkaigiapplication.data.repository.SessionRepository
+import com.info.droidkaigiapplication.data.repository.SpeakerRepository
+import com.info.droidkaigiapplication.data.source.room.RoomData
 import com.info.droidkaigiapplication.data.source.sessions.SessionData
-import com.info.droidkaigiapplication.presentation.NetworkRequestFailureMessage
-import com.info.droidkaigiapplication.presentation.NotNullMutableLiveData
-import com.info.droidkaigiapplication.presentation.getFailureMessage
-import com.info.droidkaigiapplication.presentation.isFailed
-import com.info.droidkaigiapplication.presentation.livedata.SessionsLiveData
-import com.info.droidkaigiapplication.presentation.session.model.Session
-import com.info.droidkaigiapplication.presentation.session.model.toSessionList
+import com.info.droidkaigiapplication.data.source.speakers.SpeakerData
+import com.info.droidkaigiapplication.presentation.*
+import com.info.droidkaigiapplication.presentation.livedata.SessionSummariesLiveData
+import com.info.droidkaigiapplication.presentation.session.list.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class AllSessionListViewModel(
         private val context: Context,
+        private val roomRepository: RoomRepository,
+        private val speakerRepository: SpeakerRepository,
         private val sessionRepository: SessionRepository)
     : ViewModel() {
 
@@ -29,34 +31,70 @@ class AllSessionListViewModel(
     private val _errorMessage: NotNullMutableLiveData<String> = NotNullMutableLiveData("")
     val errorMessage: LiveData<String> get() = _errorMessage
 
-    private val _sessions: SessionsLiveData = SessionsLiveData()
-    val sessions: LiveData<List<Session>> = _sessions
+    private val _sessionSummaries: SessionSummariesLiveData = SessionSummariesLiveData()
+    val sessionSummaries: LiveData<List<SessionSummary>> = _sessionSummaries
 
     fun loadAllSessionList() {
         _isLoading.postValue(true)
         viewModelScope.launch(Dispatchers.IO) {
-            val sessionResult = sessionRepository.getSessions()
-            if (sessionResult.isFailed()) {
+            val roomsResult = roomRepository.getRooms()
+            if (roomsResult.isFailed()) {
+                postErrorMessage(roomsResult)
+                return@launch
+            }
+
+            val speakersResult = speakerRepository.getSpeakers()
+            if (speakersResult.isFailed()) {
+                postErrorMessage(speakersResult)
+                return@launch
+            }
+
+            val sessionsResult = sessionRepository.getSessions()
+            if (sessionsResult.isFailed()) {
+                postErrorMessage(sessionsResult)
+                return@launch
+            }
+
+            if (isRoomOrSpeakerDataEmpty(roomsResult, speakersResult)) {
                 withContext(Dispatchers.Main) {
-                    postErrorMessage(sessionResult)
                     _isLoading.postValue(false)
                 }
                 return@launch
             }
 
-            val sessions = ((sessionResult as Result.Succeed<List<SessionData>>).data).toSessionList()
-            withContext(Dispatchers.Main) {
-                if (sessions.isNotEmpty()) {
-                    _errorMessage.postValue("")
-                }
-                this@AllSessionListViewModel._sessions.addAll(sessions)
-                _isLoading.postValue(false)
-            }
+            val sessionSummaries = getSessionSummaries(roomsResult, speakersResult, sessionsResult)
+            postSessionSummaries(sessionSummaries)
         }
     }
 
-    private fun postErrorMessage(result: Result<List<SessionData>>) {
+    private fun isRoomOrSpeakerDataEmpty(roomsResult: Result<List<RoomData>>,
+                                         speakersResult: Result<List<SpeakerData>>): Boolean {
+        return roomsResult.getData().isEmpty() or speakersResult.getData().isEmpty()
+    }
+
+    private fun getSessionSummaries(roomsResult: Result<List<RoomData>>,
+                                    speakersResult: Result<List<SpeakerData>>,
+                                    sessionsResult: Result<List<SessionData>>): List<SessionSummary> {
+        val rooms = roomsResult.getData().toRoomList()
+        val speakerSummaries = speakersResult.getData().toSpeakerSummaryList()
+        return sessionsResult.getData().toSessionSummaryList(rooms, speakerSummaries)
+    }
+
+    private suspend fun postSessionSummaries(sessionSummaries: List<SessionSummary>) {
+        withContext(Dispatchers.Main) {
+            if (sessionSummaries.isNotEmpty()) {
+                _errorMessage.postValue("")
+            }
+            this@AllSessionListViewModel._sessionSummaries.addAll(sessionSummaries)
+            _isLoading.postValue(false)
+        }
+    }
+
+    private suspend fun postErrorMessage(result: Result<List<Any>>) {
         val errorMessage = result.getFailureMessage(context)
-        _errorMessage.postValue(errorMessage)
+        withContext(Dispatchers.Main) {
+            _errorMessage.postValue(errorMessage)
+            _isLoading.postValue(false)
+        }
     }
 }

@@ -3,15 +3,15 @@ package com.info.droidkaigiapplication.presentation.session.adapter
 import android.view.View
 import com.info.droidkaigiapplication.R
 import com.info.droidkaigiapplication.databinding.ItemSessionHeaderBinding
-import com.info.droidkaigiapplication.presentation.session.model.Session
+import com.info.droidkaigiapplication.presentation.session.list.model.SessionSummary
 import com.xwray.groupie.viewbinding.BindableItem
 
 class SessionHeaderItem(
-        private val session: Session)
-    : BindableItem<ItemSessionHeaderBinding>(session.hashCode().toLong()) {
+        private val sessionSummary: SessionSummary)
+    : BindableItem<ItemSessionHeaderBinding>(sessionSummary.hashCode().toLong()) {
 
     override fun bind(viewBinding: ItemSessionHeaderBinding, position: Int) {
-        viewBinding.session = session
+        viewBinding.sessionSummary = sessionSummary
     }
 
     override fun getLayout(): Int {

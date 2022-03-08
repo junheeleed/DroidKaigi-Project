@@ -13,23 +13,6 @@ import java.text.SimpleDateFormat
 import java.util.regex.Pattern
 
 
-@BindingAdapter(value = ["dateStringWithDayOfWeek"])
-fun TextView.dateStringWithDayOfWeek(dateString: String?) {
-    if (dateString.isNullOrEmpty()) {
-        text = ""
-        return
-    }
-    val replacedDateString = dateString.replace("T", " ")
-    val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-    val outputFormat = SimpleDateFormat("yyyy년 MM월 dd일 (EEEE)\nHH시 mm분")
-    try {
-        text = outputFormat.format(inputFormat.parse(replacedDateString))
-    } catch (e: ParseException) {
-        e.printStackTrace()
-        text = ""
-    }
-}
-
 @BindingAdapter(value = ["dateString"])
 fun TextView.dateString(dateString: String) {
     if (dateString.isNullOrEmpty()) {

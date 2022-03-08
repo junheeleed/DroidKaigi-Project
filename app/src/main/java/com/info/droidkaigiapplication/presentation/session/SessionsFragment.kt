@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.info.droidkaigiapplication.R
 import com.info.droidkaigiapplication.databinding.FragmentSessionsBinding
@@ -13,7 +12,7 @@ import com.info.droidkaigiapplication.presentation.pref.Prefs
 import com.info.droidkaigiapplication.presentation.pref.PreviousSessionPrefs
 import com.info.droidkaigiapplication.presentation.session.list.AllSessionListFragment
 import com.info.droidkaigiapplication.presentation.session.list.SessionListFragment
-import com.info.droidkaigiapplication.presentation.session.model.Room
+import com.info.droidkaigiapplication.presentation.session.list.model.Room
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode

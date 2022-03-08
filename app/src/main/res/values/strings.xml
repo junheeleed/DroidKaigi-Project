@@ -14,6 +14,7 @@
     <string name="more_function_third">- show sessions by searched keyword.</string>
     <string name="more_by_writer">by Junhee Lee 2021</string>
     <string name="title">title</string>
+    <string name="room">room</string>
     <string name="speakers">speakers</string>
     <string name="start_at">startAt</string>
     <string name="end_at">endAt</string>
@@ -22,6 +23,9 @@
     <string name="next_session_title">next session title</string>
     <string name="previous_session_detail">previous session detail</string>
     <string name="next_session_detail">next session detail</string>
+    <string name="session_profile">session profile</string>
+    <string name="speaker_full_name">speaker_full_name</string>
+    <string name="slush">/</string>
 
     <string name="network_not_connected">Cellular or Wifi is not turn on.</string>
     <string name="data_load_failed">Failed to load data.</string>

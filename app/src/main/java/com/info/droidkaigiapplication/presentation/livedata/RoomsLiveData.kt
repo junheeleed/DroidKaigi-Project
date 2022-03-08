@@ -1,7 +1,7 @@
 package com.info.droidkaigiapplication.presentation.livedata
 
 import androidx.lifecycle.LiveData
-import com.info.droidkaigiapplication.presentation.session.model.Room
+import com.info.droidkaigiapplication.presentation.session.list.model.Room
 
 class RoomsLiveData: LiveData<List<Room>>() {
 

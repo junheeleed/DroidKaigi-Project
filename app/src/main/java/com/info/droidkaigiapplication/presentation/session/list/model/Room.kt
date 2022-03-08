@@ -1,11 +1,11 @@
-package com.info.droidkaigiapplication.presentation.session.model
+package com.info.droidkaigiapplication.presentation.session.list.model
 
 import com.info.droidkaigiapplication.data.source.room.RoomData
 
 
-data class Room(val id: Int,
-           val name: String,
-           val sort: Int) {
+data class Room(val id: Int = 0,
+                val name: String = "",
+                val sort: Int = 0) {
 }
 
 fun List<RoomData>.toRoomList(): List<Room> {

@@ -3,7 +3,6 @@ package com.info.droidkaigiapplication.presentation.session.list
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.info.droidkaigiapplication.R
@@ -28,6 +27,7 @@ class SessionListFragment
 
     override fun setDataBinding(dataBinding: FragmentSessionListBinding) {
         with(dataBinding) {
+            context = requireContext()
             vm = viewModel
             recyclerViewPool = sessionRecyclerViewPool
             lifecycleOwner = this@SessionListFragment

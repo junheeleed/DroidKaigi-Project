@@ -1,5 +1,6 @@
 package com.info.droidkaigiapplication.presentation.session.list
 
+import android.content.Context
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -7,31 +8,31 @@ import com.info.droidkaigiapplication.presentation.pref.PreviousSessionPrefs
 import com.info.droidkaigiapplication.presentation.restoreScrollState
 import com.info.droidkaigiapplication.presentation.session.adapter.SessionsSection
 import com.info.droidkaigiapplication.presentation.session.detail.SessionDetailsActivity.Companion.start
-import com.info.droidkaigiapplication.presentation.session.model.Session
+import com.info.droidkaigiapplication.presentation.session.list.model.SessionSummary
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 
 
-@BindingAdapter(value = ["allSessions", "recyclerViewPool"])
+@BindingAdapter(value = ["context", "sessionSummaries", "recyclerViewPool"])
 fun setAllSessions(recyclerView: RecyclerView,
-                sessions: List<Session>?,
-                recyclerViewPool: RecyclerView.RecycledViewPool
-) {
-    if (sessions == null) {
+                   context: Context,
+                   sessionSummaries: List<SessionSummary>?,
+                   recyclerViewPool: RecyclerView.RecycledViewPool) {
+    if (sessionSummaries == null) {
         return
     }
     recyclerView.adapter?.run {
-        updateAndScrollToPreviousSession(recyclerView, sessions)
+        updateAndScrollToPreviousSession(recyclerView, sessionSummaries)
     } ?: run {
-        setSessionRecyclerView(recyclerView, recyclerViewPool)
-        updateAndScrollToPreviousSession(recyclerView, sessions)
+        setSessionRecyclerView(context, recyclerView, recyclerViewPool)
+        updateAndScrollToPreviousSession(recyclerView, sessionSummaries)
     }
 }
 
 private fun updateAndScrollToPreviousSession(
         recyclerView: RecyclerView,
-        sessions: List<Session>) {
-    ((recyclerView.adapter as GroupAdapter).getTopLevelGroup(0) as SessionsSection).update(sessions)
+        sessionSummaries: List<SessionSummary>) {
+    ((recyclerView.adapter as GroupAdapter).getTopLevelGroup(0) as SessionsSection).update(sessionSummaries)
     scrollToPreviousSession(recyclerView)
 }
 
@@ -41,10 +42,11 @@ private fun scrollToPreviousSession(recyclerView: RecyclerView) {
     PreviousSessionPrefs.initPreviousSessionPrefs()
 }
 
-private fun setSessionRecyclerView(recyclerView: RecyclerView,
+private fun setSessionRecyclerView(context: Context,
+                                   recyclerView: RecyclerView,
                                    recyclerViewPool: RecyclerView.RecycledViewPool) {
     val groupAdapter = GroupAdapter<GroupieViewHolder>().apply {
-        val sessionSection = SessionsSection {
+        val sessionSection = SessionsSection(context) {
             recyclerView.context.start(it.id, -1)
         }
         add(sessionSection)

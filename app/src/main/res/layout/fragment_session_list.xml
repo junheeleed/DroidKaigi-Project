@@ -13,6 +13,10 @@
         <variable
             name="recyclerViewPool"
             type="androidx.recyclerview.widget.RecyclerView.RecycledViewPool" />
+
+        <variable
+            name="context"
+            type="android.content.Context" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,7 +30,8 @@
             android:layout_height="match_parent"
             android:visibility="@{vm.errorMessage.empty ? View.VISIBLE : View.GONE}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:sessions="@{vm.sessions}"
+            app:context="@{context}"
+            app:sessionSummaries="@{vm.sessionSummaries}"
             app:recyclerViewPool="@{recyclerViewPool}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
