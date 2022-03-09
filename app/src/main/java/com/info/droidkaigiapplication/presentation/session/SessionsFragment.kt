@@ -13,9 +13,6 @@ import com.info.droidkaigiapplication.presentation.pref.PreviousSessionPrefs
 import com.info.droidkaigiapplication.presentation.session.list.AllSessionListFragment
 import com.info.droidkaigiapplication.presentation.session.list.SessionListFragment
 import com.info.droidkaigiapplication.presentation.session.list.model.Room
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SessionsFragment
@@ -34,7 +31,6 @@ class SessionsFragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        EventBus.getDefault().register(this)
         dataBinding.savedInstanceStateBundle = savedInstanceState
         dataBinding.viewpager.adapter = SessionAdapter(this)
         setActionBar()
@@ -63,21 +59,6 @@ class SessionsFragment
         when (Prefs.enableReopenPreviousRoomSessions) {
             true -> saveCurrentSession()
             false -> PreviousSessionPrefs.initPreviousSessionPrefs()
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        EventBus.getDefault().unregister(this)
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onSessionListEvent(sessionListLoadEvent: SessionListLoadEvent) {
-        val isLoading = sessionListLoadEvent.isLoading
-        if (isLoading) {
-            dataBinding.progressbar.visibility = View.VISIBLE
-        } else {
-            dataBinding.progressbar.visibility = View.GONE
         }
     }
 

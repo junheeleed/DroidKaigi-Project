@@ -10,9 +10,7 @@ import com.info.droidkaigiapplication.databinding.FragmentSessionListBinding
 import com.info.droidkaigiapplication.presentation.DataBindingFragment
 import com.info.droidkaigiapplication.presentation.getScrollState
 import com.info.droidkaigiapplication.presentation.pref.PreviousSessionPrefs
-import com.info.droidkaigiapplication.presentation.session.SessionListLoadEvent
 import com.info.droidkaigiapplication.presentation.session.SessionsFragment
-import org.greenrobot.eventbus.EventBus
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -43,7 +41,7 @@ class SessionListFragment
 
     private fun setObservers() {
         viewModel.isLoading.observe(viewLifecycleOwner, {
-            EventBus.getDefault().post(SessionListLoadEvent(it))
+            dataBinding.progressbar.visibility = if (it) View.VISIBLE else View.GONE
         })
     }
 

@@ -64,8 +64,6 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
 
     // presentation layer
-    implementation 'org.greenrobot:eventbus:3.2.0'
-
     implementation 'com.chibatching.kotpref:kotpref:2.13.1'
     implementation 'com.chibatching.kotpref:initializer:2.13.1'
     implementation 'com.chibatching.kotpref:enum-support:2.13.1'

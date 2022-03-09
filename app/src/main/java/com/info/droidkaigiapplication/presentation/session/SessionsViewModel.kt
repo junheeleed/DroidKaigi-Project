@@ -51,6 +51,7 @@ class SessionsViewModel(
                 if (!isSame) {
                     this@SessionsViewModel._rooms.addAll(rooms)
                 }
+                _isLoading.postValue(false)
             }
         }
     }
