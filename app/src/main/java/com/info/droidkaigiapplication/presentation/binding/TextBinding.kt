@@ -29,16 +29,6 @@ fun TextView.dateString(dateString: String) {
     }
 }
 
-@BindingAdapter(value = ["textList"])
-fun TextView.setTextList(strings: List<String>) {
-    val stringBuilder = StringBuilder()
-    for (string in strings) {
-        stringBuilder.append("$string, ")
-    }
-    val appendString = stringBuilder.toString()
-    text = if (appendString.isNotEmpty()) appendString.substring(0, appendString.lastIndexOf(",") - 1) else ""
-}
-
 @BindingAdapter(value = ["highLightText"])
 fun TextView.setHighlightText(highLightText: String) {
     if (highLightText.isNullOrEmpty()) {

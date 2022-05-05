@@ -11,8 +11,6 @@ import com.info.droidkaigiapplication.presentation.NotNullMutableLiveData
 import com.info.droidkaigiapplication.presentation.getFailureMessage
 import com.info.droidkaigiapplication.presentation.isFailed
 import com.info.droidkaigiapplication.presentation.livedata.RoomsLiveData
-import com.info.droidkaigiapplication.presentation.session.list.model.Room
-import com.info.droidkaigiapplication.presentation.session.list.model.toRoomList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

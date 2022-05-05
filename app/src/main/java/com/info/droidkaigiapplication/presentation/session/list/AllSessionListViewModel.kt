@@ -14,6 +14,7 @@ import com.info.droidkaigiapplication.data.source.speakers.SpeakerData
 import com.info.droidkaigiapplication.presentation.*
 import com.info.droidkaigiapplication.presentation.livedata.SessionSummariesLiveData
 import com.info.droidkaigiapplication.presentation.session.list.model.*
+import com.info.droidkaigiapplication.presentation.session.toRoomList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

@@ -26,11 +26,6 @@ class MoreFragment
         setActionBar()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
     private fun setActionBar() {
         (requireActivity() as AppCompatActivity).setSupportActionBar(dataBinding.toolbar)
         dataBinding.toolbar.title = getString(R.string.app_name)

@@ -11,7 +11,7 @@
 
         <variable
             name="vm"
-            type="com.info.droidkaigiapplication.presentation.session.detail.SessionDetailsViewModel" />
+            type="com.info.droidkaigiapplication.presentation.session.detail.list.SessionDetailsViewModel" />
 
         <variable
             name="sessionId"
@@ -41,7 +41,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:appCompatActivity="@{appCompatActivity}"
-                    app:sessionDetails="@{vm.sessionDetails}"
+                    app:sessionDetailSummaries="@{vm.sessionDetailSummaries}"
                     app:sessionId="@{sessionId}"
                     app:roomId="@{roomId}"/>
 

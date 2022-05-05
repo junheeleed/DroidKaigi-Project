@@ -7,7 +7,6 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.info.droidkaigiapplication.presentation.pref.Prefs
 import com.info.droidkaigiapplication.presentation.pref.PreviousSessionPrefs
-import com.info.droidkaigiapplication.presentation.session.list.model.Room
 
 
 @BindingAdapter(value = ["viewPager2"])

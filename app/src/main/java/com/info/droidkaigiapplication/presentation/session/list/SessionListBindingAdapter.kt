@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.info.droidkaigiapplication.presentation.pref.PreviousSessionPrefs
 import com.info.droidkaigiapplication.presentation.restoreScrollState
 import com.info.droidkaigiapplication.presentation.session.adapter.SessionsSection
-import com.info.droidkaigiapplication.presentation.session.detail.SessionDetailsActivity.Companion.start
+import com.info.droidkaigiapplication.presentation.session.detail.list.SessionDetailsActivity.Companion.start
 import com.info.droidkaigiapplication.presentation.session.list.model.SessionSummary
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder

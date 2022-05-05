@@ -4,7 +4,6 @@ import android.view.View
 import com.info.droidkaigiapplication.R
 import com.info.droidkaigiapplication.databinding.ItemSearchedSessionBinding
 import com.info.droidkaigiapplication.presentation.search.model.SearchedSession
-import com.info.droidkaigiapplication.presentation.session.model.Session
 import com.xwray.groupie.viewbinding.BindableItem
 
 class SearchedSessionItem(

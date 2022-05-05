@@ -1,4 +1,4 @@
-package com.info.droidkaigiapplication.presentation.session.detail
+package com.info.droidkaigiapplication.presentation.session.detail.list
 
 import android.content.Context
 import androidx.lifecycle.LiveData
@@ -8,11 +8,10 @@ import com.info.droidkaigiapplication.data.Result
 import com.info.droidkaigiapplication.data.repository.SessionRepository
 import com.info.droidkaigiapplication.data.source.sessions.SessionData
 import com.info.droidkaigiapplication.presentation.NotNullMutableLiveData
+import com.info.droidkaigiapplication.presentation.getData
 import com.info.droidkaigiapplication.presentation.getFailureMessage
 import com.info.droidkaigiapplication.presentation.isFailed
-import com.info.droidkaigiapplication.presentation.livedata.SessionsDetailLiveData
-import com.info.droidkaigiapplication.presentation.session.detail.model.SessionDetail
-import com.info.droidkaigiapplication.presentation.session.detail.model.toSessionDetailList
+import com.info.droidkaigiapplication.presentation.livedata.SessionsDetailSummaryLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -25,8 +24,8 @@ class SessionDetailsViewModel(
     private val _errorMessage: NotNullMutableLiveData<String> = NotNullMutableLiveData("")
     val errorMessage: LiveData<String> get() = _errorMessage
 
-    private val _sessionDetails: SessionsDetailLiveData = SessionsDetailLiveData()
-    val sessionDetails: LiveData<List<SessionDetail>> get() = _sessionDetails
+    private val _sessionDetailSummaries: SessionsDetailSummaryLiveData = SessionsDetailSummaryLiveData()
+    val sessionDetailSummaries: LiveData<List<SessionDetailSummary>> get() = _sessionDetailSummaries
 
     fun loadSessionList(sessionId: Int, roomId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -38,7 +37,7 @@ class SessionDetailsViewModel(
                 return@launch
             }
 
-            val sessionDetails = (sessionsResult as Result.Succeed<List<SessionData>>).data.toSessionDetailList().run {
+            val sessionDetails = sessionsResult.getData().toSessionDetailList().run {
                 if (roomId > 0) {
                     this.filter { it.roomId == roomId }
                 } else if ((sessionId > 0) and (roomId == 0)) {
@@ -49,12 +48,12 @@ class SessionDetailsViewModel(
             }
 
             withContext(Dispatchers.Main) {
-                _sessionDetails.addAll(sessionDetails)
+                _sessionDetailSummaries.addAll(sessionDetails)
             }
         }
     }
 
-    fun getSessionDetailsSize() = _sessionDetails.size()
+    fun getSessionDetailsSize() = _sessionDetailSummaries.size()
 
     private fun postErrorMessage(result: Result<List<SessionData>>) {
         val errorMessage = result.getFailureMessage(context)

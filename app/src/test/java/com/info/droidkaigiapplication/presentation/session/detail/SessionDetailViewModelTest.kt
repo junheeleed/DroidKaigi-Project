@@ -5,8 +5,10 @@ import androidx.lifecycle.Observer
 import androidx.test.platform.app.InstrumentationRegistry
 import com.info.droidkaigiapplication.MainCoroutineRule
 import com.info.droidkaigiapplication.data.Result
+import com.info.droidkaigiapplication.data.repository.RoomRepository
 import com.info.droidkaigiapplication.data.repository.SessionRepository
 import com.info.droidkaigiapplication.data.repository.SpeakerRepository
+import com.info.droidkaigiapplication.data.source.room.RoomData
 import com.info.droidkaigiapplication.data.source.sessions.SessionData
 import com.info.droidkaigiapplication.data.source.speakers.SpeakerData
 import com.info.droidkaigiapplication.mock
@@ -38,6 +40,9 @@ class SessionDetailViewModelTest {
     val mainCoroutineRule = MainCoroutineRule()
 
     @Mock
+    private val roomRepository = mock<RoomRepository>()
+
+    @Mock
     private val sessionRepository = mock<SessionRepository>()
 
     @Mock
@@ -58,7 +63,7 @@ class SessionDetailViewModelTest {
     @Before
     fun before() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        sessionDetailViewModel = SessionDetailViewModel(context, sessionRepository, speakerRepository)
+        sessionDetailViewModel = SessionDetailViewModel(context, roomRepository, sessionRepository, speakerRepository)
         sessionDetailViewModel.isLoading.observeForever(isLoadingObserver)
         sessionDetailViewModel.errorMessage.observeForever(errorMessageObserver)
         sessionDetailViewModel.sessionDetail.observeForever(sessionDetailObserver)
@@ -70,31 +75,17 @@ class SessionDetailViewModelTest {
     }
 
     @Test
-    fun sessionDetail_Empty() {
-        runBlockingTest {
-            val speakerDataListResult: Result.Succeed<List<SpeakerData>> = Result.Succeed(listOf())
-            Mockito.`when`(speakerRepository.getSpeakers()).thenReturn(speakerDataListResult)
-
-            val sessionDataListResult: Result.Succeed<List<SessionData>> = Result.Succeed(listOf())
-            Mockito.`when`(sessionRepository.getSessions()).thenReturn(sessionDataListResult)
-
-            sessionDetailViewModel.loadSession(0, 0)
-
-            isLoadingInOrder.verify(isLoadingObserver).onChanged(true)
-            Mockito.verify(isNavigateNeededObserver, Mockito.times(2)).onChanged(false)
-            isLoadingInOrder.verify(isLoadingObserver).onChanged(false)
-        }
-    }
-
-    @Test
     fun sessionDetail_Single() {
         runBlockingTest {
-            val size = 1
-            val speakerDataList: List<SpeakerData> = getSpeakerDataList(size)
+            val roomDataList: List<RoomData> = getRoomDataList(10)
+            val roomDataListResult: Result.Succeed<List<RoomData>> = Result.Succeed(roomDataList)
+            Mockito.`when`(roomRepository.getRooms()).thenReturn(roomDataListResult)
+
+            val speakerDataList: List<SpeakerData> = getSpeakerDataList(10)
             val speakerDataListResult: Result.Succeed<List<SpeakerData>> = Result.Succeed(speakerDataList)
             Mockito.`when`(speakerRepository.getSpeakers()).thenReturn(speakerDataListResult)
 
-            val sessionDataList: List<SessionData> = getSessionDataList(size)
+            val sessionDataList: List<SessionData> = getSessionDataList(10)
             val sessionDataListResult: Result.Succeed<List<SessionData>> = Result.Succeed(sessionDataList)
             Mockito.`when`(sessionRepository.getSessions()).thenReturn(sessionDataListResult)
 
@@ -116,12 +107,15 @@ class SessionDetailViewModelTest {
     @Test
     fun sessionDetail_Many_First() {
         runBlockingTest {
-            val size = 10
-            val speakerDataList: List<SpeakerData> = getSpeakerDataList(size)
+            val roomDataList: List<RoomData> = getRoomDataList(10)
+            val roomDataListResult: Result.Succeed<List<RoomData>> = Result.Succeed(roomDataList)
+            Mockito.`when`(roomRepository.getRooms()).thenReturn(roomDataListResult)
+
+            val speakerDataList: List<SpeakerData> = getSpeakerDataList(10)
             val speakerDataListResult: Result.Succeed<List<SpeakerData>> = Result.Succeed(speakerDataList)
             Mockito.`when`(speakerRepository.getSpeakers()).thenReturn(speakerDataListResult)
 
-            val sessionDataList: List<SessionData> = getSessionDataList(size)
+            val sessionDataList: List<SessionData> = getSessionDataList(10)
             val sessionDataListResult: Result.Succeed<List<SessionData>> = Result.Succeed(sessionDataList)
             Mockito.`when`(sessionRepository.getSessions()).thenReturn(sessionDataListResult)
 
@@ -144,6 +138,10 @@ class SessionDetailViewModelTest {
     @Test
     fun sessionDetail_Many_Last() {
         runBlockingTest {
+            val roomDataList: List<RoomData> = getRoomDataList(10)
+            val roomDataListResult: Result.Succeed<List<RoomData>> = Result.Succeed(roomDataList)
+            Mockito.`when`(roomRepository.getRooms()).thenReturn(roomDataListResult)
+
             val speakerDataList: List<SpeakerData> = getSpeakerDataList(10)
             val speakerDataListResult: Result.Succeed<List<SpeakerData>> = Result.Succeed(speakerDataList)
             Mockito.`when`(speakerRepository.getSpeakers()).thenReturn(speakerDataListResult)
@@ -171,12 +169,15 @@ class SessionDetailViewModelTest {
     @Test
     fun sessionDetail_Many_Middle() {
         runBlockingTest {
-            val size = 10
-            val speakerDataList: List<SpeakerData> = getSpeakerDataList(size)
+            val roomDataList: List<RoomData> = getRoomDataList(10)
+            val roomDataListResult: Result.Succeed<List<RoomData>> = Result.Succeed(roomDataList)
+            Mockito.`when`(roomRepository.getRooms()).thenReturn(roomDataListResult)
+
+            val speakerDataList: List<SpeakerData> = getSpeakerDataList(10)
             val speakerDataListResult: Result.Succeed<List<SpeakerData>> = Result.Succeed(speakerDataList)
             Mockito.`when`(speakerRepository.getSpeakers()).thenReturn(speakerDataListResult)
 
-            val sessionDataList: List<SessionData> = getSessionDataList(size)
+            val sessionDataList: List<SessionData> = getSessionDataList(10)
             val sessionDataListResult: Result.Succeed<List<SessionData>> = Result.Succeed(sessionDataList)
             Mockito.`when`(sessionRepository.getSessions()).thenReturn(sessionDataListResult)
 
@@ -200,7 +201,7 @@ class SessionDetailViewModelTest {
     fun sessionDetail_Failure() {
         runBlockingTest {
             val failureResult: Result.Failure = Result.Failure(-1, "error")
-            Mockito.`when`(speakerRepository.getSpeakers()).thenReturn(failureResult)
+            Mockito.`when`(roomRepository.getRooms()).thenReturn(failureResult)
 
             sessionDetailViewModel.loadSession(1, 1)
 
@@ -214,7 +215,7 @@ class SessionDetailViewModelTest {
     fun sessionDetail_Error_SocketTimeOut() {
         runBlockingTest {
             val result = Result.Error(SocketTimeoutException())
-            Mockito.`when`(speakerRepository.getSpeakers()).thenReturn(result)
+            Mockito.`when`(roomRepository.getRooms()).thenReturn(result)
 
             sessionDetailViewModel.loadSession(1, 1)
 
@@ -228,7 +229,7 @@ class SessionDetailViewModelTest {
     fun sessionDetail_Error_UnknownHost() {
         runBlockingTest {
             val result = Result.Error(UnknownHostException())
-            Mockito.`when`(speakerRepository.getSpeakers()).thenReturn(result)
+            Mockito.`when`(roomRepository.getRooms()).thenReturn(result)
 
             sessionDetailViewModel.loadSession(1, 1)
 
@@ -242,7 +243,7 @@ class SessionDetailViewModelTest {
     fun sessionDetail_Error_Exception() {
         runBlockingTest {
             val result = Result.Error(Exception())
-            Mockito.`when`(speakerRepository.getSpeakers()).thenReturn(result)
+            Mockito.`when`(roomRepository.getRooms()).thenReturn(result)
 
             sessionDetailViewModel.loadSession(1, 1)
 
@@ -250,6 +251,14 @@ class SessionDetailViewModelTest {
             Mockito.verify(errorMessageObserver).onChanged("Failed to load data.")
             isLoadingInOrder.verify(isLoadingObserver).onChanged(false)
         }
+    }
+
+    private fun getRoomDataList(size: Int): List<RoomData> {
+        val roomList: ArrayList<RoomData> = arrayListOf()
+        for (i in 1 .. size) {
+            roomList.add(RoomData(i, "", 0))
+        }
+        return roomList
     }
 
     private fun getSpeakerDataList(size: Int): List<SpeakerData> {

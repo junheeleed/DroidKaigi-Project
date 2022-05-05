@@ -7,183 +7,243 @@
     <data>
         <import type="android.view.View"/>
         <import type="android.text.TextUtils"/>
+        <import type="com.info.droidkaigiapplication.presentation.ColorCalculator"/>
         <variable
             name="vm"
             type="com.info.droidkaigiapplication.presentation.session.detail.SessionDetailViewModel" />
+
+        <variable
+            name="toolbarTextColorFactor"
+            type="float"
+            />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.core.widget.NestedScrollView
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:fillViewport="true"
-            android:visibility="@{vm.sessionDetail.empty ? View.GONE : View.VISIBLE}"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/navigate_layout">
+            android:layout_height="match_parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appbar_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                android:visibility="@{vm.isLoading() ? View.GONE : View.VISIBLE}">
 
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginStart="10dp"
-                    android:text="@{vm.sessionDetail.title}"
-                    tools:text="@string/title"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"/>
-
-                <TextView
-                    android:id="@+id/speakers"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginStart="10dp"
-                    tools:text="@string/speakers"
-                    app:textList="@{vm.sessionDetail.speakers}"
-                    app:layout_constraintTop_toBottomOf="@+id/title"
-                    app:layout_constraintLeft_toLeftOf="parent"/>
-
-                <TextView
-                    android:id="@+id/start_at"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    tools:text="@string/start_at"
-                    app:dateString="@{vm.sessionDetail.startsAt}"
-                    app:layout_constraintTop_toTopOf="@id/period_char"
-                    app:layout_constraintRight_toLeftOf="@id/period_char"
-                    app:layout_constraintBottom_toBottomOf="@id/period_char"/>
-
-                <TextView
-                    android:id="@+id/period_char"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:text="@string/period_char"
-                    android:visibility="gone"
-                    app:layout_constraintTop_toTopOf="@id/end_at"
-                    app:layout_constraintRight_toLeftOf="@id/end_at"
-                    app:sessionDetail="@{vm.sessionDetail}"/>
-
-                <TextView
-                    android:id="@+id/end_at"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    tools:text="@string/end_at"
-                    app:dateString="@{vm.sessionDetail.endsAt}"
-                    app:layout_constraintTop_toBottomOf="@id/speakers"
-                    app:layout_constraintRight_toRightOf="parent"/>
-
-                <View
-                    android:id="@+id/divider"
+                <com.google.android.material.appbar.CollapsingToolbarLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/gray"
-                    app:layout_constraintTop_toBottomOf="@id/start_at"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"/>
-
-                <TextView
-                    android:id="@+id/description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="@{vm.sessionDetail.description}"
-                    tools:text="@string/description"
-                    app:layout_constraintTop_toBottomOf="@id/divider"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.core.widget.NestedScrollView>
-
-        <LinearLayout
-            android:id="@+id/navigate_layout"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal"
-            android:visibility="@{vm.isNavigateNeeded() ? View.VISIBLE : View.GONE}"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-            <ImageButton
-                android:id="@+id/previous"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/arrow_back_24"
-                android:contentDescription="@string/previous_session_detail"
-                android:background="@drawable/arrow_selector"
-                app:isEnabled="@{!vm.isFirst()}"/>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/next"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/arrow_selector"
-                app:isEnabled="@{!vm.isLast()}">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@{vm.nextSessionTitle}"
-                    android:gravity="end"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    tools:text="@string/next_session_title"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@id/next_image"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-
-                <ImageView
-                    android:id="@+id/next_image"
-                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:padding="10dp"
-                    android:src="@drawable/arrow_forward_24"
-                    android:contentDescription="@string/next_session_detail"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    android:fitsSystemWindows="true"
+                    android:paddingBottom="8dp"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                    app:titleEnabled="false">
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="?android:attr/actionBarSize"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="5dp"
+                        android:fitsSystemWindows="true"
+                        android:alpha="@{1.0f - toolbarTextColorFactor}"
+                        app:layout_collapseMode="parallax"
+                        app:errorMessage="@{vm.errorMessage}">
 
-        <include
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="85dp"
-            layout="@layout/layout_failure_info"
-            bind:message="@{vm.errorMessage}"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+                        <TextView
+                            android:id="@+id/title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:maxLines="1"
+                            android:textColor="@android:color/white"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:text="@{vm.sessionDetail.title}"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="@string/title" />
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="@{vm.isLoading() ? View.VISIBLE : View.GONE}"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                        <ImageView
+                            android:id="@+id/speaker_profile"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginTop="10dp"
+                            android:contentDescription="@string/session_profile"
+                            android:src="@drawable/profile_default"
+                            app:context="@{context}"
+                            app:profilePictureUrl="@{vm.sessionDetail.speakerDetail.profilePicture}"
+                            app:layout_constraintTop_toBottomOf="@id/title"
+                            app:layout_constraintLeft_toLeftOf="parent"/>
+
+                        <TextView
+                            android:id="@+id/speaker_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:textColor="@android:color/white"
+                            android:textSize="16sp"
+                            android:text="@{vm.sessionDetail.speakerDetail.fullName}"
+                            app:layout_constraintTop_toTopOf="@id/speaker_profile"
+                            app:layout_constraintStart_toEndOf="@id/speaker_profile"
+                            app:layout_constraintBottom_toBottomOf="@id/speaker_profile"
+                            tools:text="@string/speaker_full_name"/>
+
+                        <TextView
+                            android:id="@+id/time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:textColor="@android:color/white"
+                            android:textSize="15sp"
+                            app:startDate="@{vm.sessionDetail.startsAt}"
+                            app:endDate="@{vm.sessionDetail.endsAt}"
+                            app:layout_constraintTop_toBottomOf="@id/speaker_profile"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            tools:text="00:00 - 00:00"/>
+
+                        <TextView
+                            android:id="@+id/slush"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:textColor="@android:color/white"
+                            android:textSize="15sp"
+                            android:text="@string/slush"
+                            android:visibility="@{vm.sessionDetail.room.name.empty ? View.GONE : View.VISIBLE}"
+                            app:layout_constraintTop_toTopOf="@id/time"
+                            app:layout_constraintStart_toEndOf="@id/time"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:textColor="@android:color/white"
+                            android:textSize="15sp"
+                            android:text="@{vm.sessionDetail.room.name}"
+                            app:layout_constraintTop_toTopOf="@id/time"
+                            app:layout_constraintStart_toEndOf="@id/slush"
+                            tools:text="room_name"/>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.appcompat.widget.Toolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:textColor="@android:color/white"
+                        app:layout_collapseMode="pin"
+                        app:navigationIcon="?attr/homeAsUpIndicator"
+                        app:title="@{vm.sessionDetail.title}"
+                        app:titleTextColor="@{ColorCalculator.calculateColor(toolbarTextColorFactor, @android:color/white)}"/>
+
+                </com.google.android.material.appbar.CollapsingToolbarLayout>
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{vm.sessionDetail.empty ? View.GONE : View.VISIBLE}"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:id="@+id/description"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="start"
+                        android:text="@{vm.sessionDetail.description}"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        tools:text="@string/description"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.core.widget.NestedScrollView>
+
+            <LinearLayout
+                android:id="@+id/navigate_layout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="bottom"
+                android:orientation="horizontal"
+                android:visibility="@{vm.isNavigateNeeded() ? View.VISIBLE : View.GONE}"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_behavior=".presentation.BottomBarBehavior">
+
+                <ImageButton
+                    android:id="@+id/previous"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/arrow_back_24"
+                    android:contentDescription="@string/previous_session_detail"
+                    android:background="@drawable/arrow_selector"
+                    app:isEnabled="@{!vm.isFirst()}"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/next"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/arrow_selector"
+                    app:isEnabled="@{!vm.isLast()}">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textColor="@android:color/white"
+                        android:text="@{vm.nextSessionTitle}"
+                        android:textSize="15sp"
+                        tools:text="@string/next_session_title"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toLeftOf="@id/next_image"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <ImageView
+                        android:id="@+id/next_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:padding="10dp"
+                        android:src="@drawable/arrow_forward_24"
+                        android:contentDescription="@string/next_session_detail"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+
+            <include
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="85dp"
+                layout="@layout/layout_failure_info"
+                bind:message="@{vm.errorMessage}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="@{vm.isLoading() ? View.VISIBLE : View.GONE}"/>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </FrameLayout>
 </layout>

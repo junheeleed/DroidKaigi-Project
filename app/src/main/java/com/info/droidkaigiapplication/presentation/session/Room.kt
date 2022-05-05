@@ -1,4 +1,4 @@
-package com.info.droidkaigiapplication.presentation.session.list.model
+package com.info.droidkaigiapplication.presentation.session
 
 import com.info.droidkaigiapplication.data.source.room.RoomData
 

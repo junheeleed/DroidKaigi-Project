@@ -9,6 +9,5 @@
     <color name="session_header_background">#E1E1E1</color>
     <color name="profile_image_default_color">#B9B9B9</color>
 
-    <color name="session_detail_bottom_button_background">#08000000</color>
-    <color name="session_detail_bottom_button_background_disable">#05000000</color>
+    <color name="session_detail_bottom_button_background_disable">#D4A012</color>
 </resources>

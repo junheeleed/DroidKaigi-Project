@@ -1,4 +1,4 @@
-package com.info.droidkaigiapplication.presentation.session.detail
+package com.info.droidkaigiapplication.presentation.session.detail.list
 
 import android.content.Context
 import android.content.Intent
@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.info.droidkaigiapplication.R
 import com.info.droidkaigiapplication.databinding.ActivitySessionDetailsBinding
-import com.info.droidkaigiapplication.presentation.session.detail.model.SessionDetail
+import com.info.droidkaigiapplication.presentation.session.detail.SessionDetailFragment
 import com.info.droidkaigiapplication.presentation.showToast
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -20,7 +20,7 @@ class SessionDetailsActivity
     private var _dataBinding: ActivitySessionDetailsBinding? = null
     private val dataBinding get() = _dataBinding!!
 
-    private val listViewModel: SessionDetailsViewModel by viewModel()
+    private val viewModel: SessionDetailsViewModel by viewModel()
     private var sessionId = 0
     private var roomId = 0
 
@@ -29,8 +29,7 @@ class SessionDetailsActivity
         _dataBinding = (DataBindingUtil.setContentView(this, R.layout.activity_session_details))
         _dataBinding!!.lifecycleOwner = this
         init()
-        setUi()
-        listViewModel.loadSessionList(sessionId, roomId)
+        viewModel.loadSessionList(sessionId, roomId)
     }
 
     private fun init() {
@@ -38,13 +37,9 @@ class SessionDetailsActivity
         roomId = intent.getIntExtra(ROOM_ID, 0)
 
         dataBinding.appCompatActivity = this
-        dataBinding.vm = listViewModel
+        dataBinding.vm = viewModel
         dataBinding.sessionId = sessionId
         dataBinding.roomId = roomId
-    }
-
-    private fun setUi() {
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun previousSession() {
@@ -58,7 +53,7 @@ class SessionDetailsActivity
 
     override fun nextSession() {
         val currentPosition = dataBinding.viewpager.currentItem
-        if (listViewModel.getSessionDetailsSize() > currentPosition) {
+        if (viewModel.getSessionDetailsSize() > currentPosition) {
             dataBinding.viewpager.currentItem = currentPosition + 1
         } else {
             showToast("there is no page")
@@ -104,7 +99,7 @@ class SessionDetailAdapter(
         private val roomId: Int
 ) : FragmentStateAdapter(activity) {
 
-    var sessionDetails = listOf<SessionDetail>()
+    var sessionDetailSummaries = listOf<SessionDetailSummary>()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -114,15 +109,15 @@ class SessionDetailAdapter(
         }
 
     override fun getItemCount(): Int {
-        return sessionDetails.size
+        return sessionDetailSummaries.size
     }
 
     override fun createFragment(position: Int): Fragment {
-        val session = sessionDetails[position]
+        val sessionDetailSummaries = sessionDetailSummaries[position]
         return SessionDetailFragment.newInstance(
-                session.id,
-                if (roomId > 0) session.roomId
-                else if ((session.id > 0) and (roomId == 0)) 0
+                sessionDetailSummaries.id,
+                if (roomId > 0) sessionDetailSummaries.roomId
+                else if ((sessionDetailSummaries.id > 0) and (roomId == 0)) 0
                 else -1
         )
     }

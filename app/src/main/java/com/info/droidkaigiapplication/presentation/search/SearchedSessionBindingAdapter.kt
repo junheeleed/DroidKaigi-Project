@@ -5,7 +5,7 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.info.droidkaigiapplication.presentation.search.model.SearchedSession
-import com.info.droidkaigiapplication.presentation.session.detail.SessionDetailsActivity.Companion.start
+import com.info.droidkaigiapplication.presentation.session.detail.list.SessionDetailsActivity.Companion.start
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 

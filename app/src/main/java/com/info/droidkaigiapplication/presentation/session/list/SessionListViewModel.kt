@@ -17,6 +17,7 @@ import com.info.droidkaigiapplication.presentation.getFailureMessage
 import com.info.droidkaigiapplication.presentation.isFailed
 import com.info.droidkaigiapplication.presentation.livedata.SessionSummariesLiveData
 import com.info.droidkaigiapplication.presentation.session.list.model.*
+import com.info.droidkaigiapplication.presentation.session.toRoom
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

@@ -27,7 +27,8 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-        <activity android:name=".presentation.session.detail.SessionDetailsActivity" />
+        <activity android:name=".presentation.session.detail.list.SessionDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <provider
             android:name=".presentation.search.SearchSuggestionProvider"

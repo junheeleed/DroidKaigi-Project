@@ -12,7 +12,6 @@ import com.info.droidkaigiapplication.presentation.pref.Prefs
 import com.info.droidkaigiapplication.presentation.pref.PreviousSessionPrefs
 import com.info.droidkaigiapplication.presentation.session.list.AllSessionListFragment
 import com.info.droidkaigiapplication.presentation.session.list.SessionListFragment
-import com.info.droidkaigiapplication.presentation.session.list.model.Room
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SessionsFragment

@@ -12,7 +12,7 @@ import com.info.droidkaigiapplication.presentation.search.SearchViewModel
 import com.info.droidkaigiapplication.presentation.session.list.SessionListViewModel
 import com.info.droidkaigiapplication.presentation.session.SessionsViewModel
 import com.info.droidkaigiapplication.presentation.session.detail.SessionDetailViewModel
-import com.info.droidkaigiapplication.presentation.session.detail.SessionDetailsViewModel
+import com.info.droidkaigiapplication.presentation.session.detail.list.SessionDetailsViewModel
 import com.info.droidkaigiapplication.presentation.session.list.AllSessionListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -26,7 +26,7 @@ val viewModelModule = module {
     viewModel { AllSessionListViewModel(get(), get(), get(), get()) }
     viewModel { SessionListViewModel(get(), get(), get(), get()) }
     viewModel { SessionDetailsViewModel(get(), get()) }
-    viewModel { SessionDetailViewModel(get(), get(), get()) }
+    viewModel { SessionDetailViewModel(get(), get(), get(), get()) }
     viewModel { SearchViewModel(get(), get(), get()) }
 }
 

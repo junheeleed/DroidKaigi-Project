@@ -2,6 +2,7 @@ package com.info.droidkaigiapplication.presentation.session.list.model
 
 import com.info.droidkaigiapplication.data.source.sessions.SessionData
 import com.info.droidkaigiapplication.presentation.getDays
+import com.info.droidkaigiapplication.presentation.session.Room
 
 
 data class SessionSummary(val id: Int,

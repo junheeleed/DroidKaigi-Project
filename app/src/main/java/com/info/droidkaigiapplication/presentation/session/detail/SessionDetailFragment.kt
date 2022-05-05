@@ -3,10 +3,15 @@ package com.info.droidkaigiapplication.presentation.session.detail
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
+import androidx.core.view.updatePadding
+import com.google.android.material.appbar.AppBarLayout
 import com.info.droidkaigiapplication.R
 import com.info.droidkaigiapplication.databinding.FragmentSessionDetailBinding
 import com.info.droidkaigiapplication.presentation.DataBindingFragment
+import kotlinx.android.synthetic.main.fragment_session_detail.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.RuntimeException
 
@@ -38,11 +43,26 @@ class SessionDetailFragment
         super.onViewCreated(view, savedInstanceState)
         val sessionId = requireArguments().getInt(SESSION_ID, 0)
         val roomId = requireArguments().getInt(ROOM_ID, 0)
+        setActionBar()
         setListener()
         viewModel.loadSession(sessionId, roomId)
     }
 
+    private fun setActionBar() {
+        (requireActivity() as AppCompatActivity).setSupportActionBar(dataBinding.toolbar)
+    }
+
     private fun setListener() {
+        dataBinding.appbarLayout.addOnOffsetChangedListener(
+            AppBarLayout.BaseOnOffsetChangedListener<AppBarLayout> {
+                    appBarLayout, verticalOffset ->
+                val factor = (-verticalOffset).toFloat() / appBarLayout.totalScrollRange.toFloat()
+                dataBinding.toolbarTextColorFactor = factor
+            }
+        )
+        dataBinding.toolbar.setNavigationOnClickListener {
+            requireActivity().finish()
+        }
         dataBinding.previous.setOnClickListener {
             listener.previousSession()
         }
@@ -52,9 +72,10 @@ class SessionDetailFragment
     }
 
     companion object {
-        const val SESSION_ID = "SessionId"
-        const val ROOM_ID = "RoomId"
-        fun newInstance(sessionId: Int, roomId: Int): SessionDetailFragment {
+        private const val SESSION_ID = "SessionId"
+        private const val ROOM_ID = "RoomId"
+        fun newInstance(sessionId: Int,
+                        roomId: Int): SessionDetailFragment {
             return SessionDetailFragment().apply {
                 arguments = bundleOf(SESSION_ID to sessionId, ROOM_ID to roomId)
             }

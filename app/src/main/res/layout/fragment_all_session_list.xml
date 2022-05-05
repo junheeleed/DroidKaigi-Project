@@ -31,7 +31,7 @@
             android:visibility="@{vm.errorMessage.empty ? View.VISIBLE : View.GONE}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:context="@{context}"
-            app:sessionSummaries="@{vm.sessionSummaries}"
+            app:allSessionSummaries="@{vm.sessionSummaries}"
             app:recyclerViewPool="@{recyclerViewPool}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

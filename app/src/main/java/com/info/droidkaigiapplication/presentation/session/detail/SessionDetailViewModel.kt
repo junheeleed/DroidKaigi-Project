@@ -5,26 +5,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.info.droidkaigiapplication.data.Result
+import com.info.droidkaigiapplication.data.repository.RoomRepository
 import com.info.droidkaigiapplication.data.repository.SessionRepository
 import com.info.droidkaigiapplication.data.repository.SpeakerRepository
+import com.info.droidkaigiapplication.data.source.room.RoomData
 import com.info.droidkaigiapplication.data.source.sessions.SessionData
 import com.info.droidkaigiapplication.data.source.speakers.SpeakerData
-import com.info.droidkaigiapplication.presentation.NotNullMutableLiveData
-import com.info.droidkaigiapplication.presentation.getFailureMessage
-import com.info.droidkaigiapplication.presentation.intersect
-import com.info.droidkaigiapplication.presentation.isFailed
-import com.info.droidkaigiapplication.presentation.session.detail.model.SessionDetail
-import com.info.droidkaigiapplication.presentation.session.detail.model.Speaker
-import com.info.droidkaigiapplication.presentation.session.detail.model.toSessionDetail
-import com.info.droidkaigiapplication.presentation.session.detail.model.toSpeakerList
-import com.info.droidkaigiapplication.presentation.session.model.Session
-import com.info.droidkaigiapplication.presentation.session.model.toSessionList
+import com.info.droidkaigiapplication.presentation.*
+import com.info.droidkaigiapplication.presentation.session.Room
+import com.info.droidkaigiapplication.presentation.session.detail.model.*
+import com.info.droidkaigiapplication.presentation.session.toRoom
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SessionDetailViewModel(
         private val context: Context,
+        private val roomRepository: RoomRepository,
         private val sessionRepository: SessionRepository,
         private val speakerRepository: SpeakerRepository)
     : ViewModel() {
@@ -53,54 +50,53 @@ class SessionDetailViewModel(
     fun loadSession(sessionId: Int, roomId: Int) {
         _isLoading.postValue(true)
         viewModelScope.launch(Dispatchers.IO) {
+            val roomsResult = roomRepository.getRooms()
+            if (roomsResult.isFailed()) {
+                postErrorMessage(roomsResult)
+                return@launch
+            }
+
             val speakersResult = speakerRepository.getSpeakers()
             if (speakersResult.isFailed()) {
-                withContext(Dispatchers.Main) {
-                    postErrorMessage(speakersResult)
-                    _isLoading.postValue(false)
-                }
+                postErrorMessage(speakersResult)
                 return@launch
             }
 
             val sessionsResult = sessionRepository.getSessions()
             if (sessionsResult.isFailed()) {
-                withContext(Dispatchers.Main) {
-                    postErrorMessage(sessionsResult)
-                    _isLoading.postValue(false)
-                }
+                postErrorMessage(sessionsResult)
                 return@launch
             }
-            val sessions = (sessionsResult as Result.Succeed<List<SessionData>>).data.toSessionList().run {
-                if (roomId > 0) {
-                    this.filter { it.roomId == roomId }
-                } else if ((sessionId > 0) and (roomId == 0)) {
-                    this.filter { it.id == sessionId }
-                } else {
-                    this
-                }
-            }
 
+            val sessionDataList = sessionsResult.getSessionDataList(roomId, sessionId)
             withContext(Dispatchers.Main) {
-                setSessionDetail(sessionId, speakersResult, sessions)
+                setSessionDetail(sessionId,
+                        speakersResult.getData(),
+                        roomsResult.getData(),
+                        sessionDataList)
                 setNavigateNeeded(sessionId, roomId)
                 _isLoading.postValue(false)
             }
         }
     }
 
-    private fun setSessionDetail(sessionId: Int, speakersResult: Result<List<SpeakerData>>, sessions: List<Session>) {
-        val position = sessions.indexOfFirst { it.id == sessionId }
-        if ((position > -1) and (position < sessions.size)) {
-            val nextPageTitle = if (position == sessions.size - 1) "" else sessions[position + 1].title
-            val session = sessions[position]
-            val speakers: List<String> = (speakersResult as Result.Succeed<List<SpeakerData>>).data.toSpeakerStringList(session.speakers)
-            this@SessionDetailViewModel._sessionDetail.postValue(session.toSessionDetail(speakers))
-            if (sessions.first().id == sessions.last().id) {
+    private fun setSessionDetail(sessionId: Int,
+                                 speakerDateList: List<SpeakerData>,
+                                 roomDateList: List<RoomData>,
+                                 sessionsDateList: List<SessionData>) {
+        val position = sessionsDateList.indexOfFirst { it.id == sessionId }
+        if ((position > -1) and (position < sessionsDateList.size)) {
+            val nextPageTitle = if (position == sessionsDateList.size - 1) "" else sessionsDateList[position + 1].title
+            val session = sessionsDateList[position]
+            val speakerDetail = speakerDateList.toSpeakerDetail(session.speakers.first())
+            val room = roomDateList.toRoom(session.roomId)
+            this@SessionDetailViewModel._sessionDetail.postValue(session.toSessionDetail(speakerDetail, room))
+            if (sessionsDateList.first().id == sessionsDateList.last().id) {
                 setFirstAndLast(true, true)
-            } else if (session.id == sessions.first().id) {
+            } else if (session.id == sessionsDateList.first().id) {
                 _nextSessionTitle.postValue(nextPageTitle)
                 setFirstAndLast(true, false)
-            } else if (session.id == sessions.last().id) {
+            } else if (session.id == sessionsDateList.last().id) {
                 setFirstAndLast(false, true)
             } else {
                 _nextSessionTitle.postValue(nextPageTitle)
@@ -109,11 +105,25 @@ class SessionDetailViewModel(
         }
     }
 
-    private fun List<SpeakerData>.toSpeakerStringList(speakerListOfSession: List<String>): List<String> {
-        val list: List<Speaker> = intersect(speakerListOfSession, {
-            speakerData: SpeakerData, s: String -> speakerData.id == s
-        }).toSpeakerList()
-        return list.map { speaker ->  speaker.fullName }
+    private fun List<SpeakerData>.toSpeakerDetail(speakerId: String): SpeakerDetail {
+        return this.first { it.id == speakerId }.toSpeakerDetail()
+    }
+
+    private fun List<RoomData>.toRoom(roomId: Int): Room {
+        return this.first { it.id == roomId }.toRoom()
+    }
+
+    private fun Result<List<SessionData>>.getSessionDataList(roomId: Int,
+                                                             sessionId: Int): List<SessionData> {
+        return this.getData().run {
+            if (roomId > 0) {
+                this.filter { it.roomId == roomId }
+            } else if ((sessionId > 0) and (roomId == 0)) {
+                this.filter { it.id == sessionId }
+            } else {
+                this
+            }
+        }
     }
 
     private fun setFirstAndLast(isFirst: Boolean, isLast: Boolean) {
@@ -131,8 +141,11 @@ class SessionDetailViewModel(
         }
     }
 
-    private fun postErrorMessage(result: Result<Any>) {
+    private suspend fun postErrorMessage(result: Result<Any>) {
         val errorMessage = result.getFailureMessage(context)
-        _errorMessage.postValue(errorMessage)
+        withContext(Dispatchers.Main) {
+            _errorMessage.postValue(errorMessage)
+            _isLoading.postValue(false)
+        }
     }
 }
