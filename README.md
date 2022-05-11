@@ -4,7 +4,7 @@
 
 # Features
 
-(https://github.com/junheeleed/DroidKaigi-Project/tree/master/art/screenshot_sessions.png)
+![ScreenShot](/art/screenshot_sessions.png)
 
 - 컨퍼런스 일정과 각 세션 상세 정보 안내 기능
 - 세션에 대한 검색 기능
